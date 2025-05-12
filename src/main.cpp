@@ -1,7 +1,9 @@
 #include <fstream>
 #include <logger.hpp>
+#include <lexer.hpp>
 
 int main(int argc, const char* argv[]) {
+    // Read the file
     if (argc != 2) return 1;
     Logger::codeFilename = argv[1];
     std::ifstream file(argv[1]);
@@ -11,7 +13,15 @@ int main(int argc, const char* argv[]) {
         Logger::codeLines.push_back(line);
         str += line + '\n';
     }
-    Logger::errorAt({6, 17, 3, "fib"}, "Undefined function `%s`", "fib");
     file.close();
+    // Lexical analysis
+    Lexer lexer;
+    lexer.setSource(str.c_str());
+    Token token;
+    do {
+        token = lexer.getToken();
+        printf("%i - %u:%u `%.*s`[%u]\n", token.type, token.line, token.column, token.length, token.lexeme, token.length);
+    } while (token.type != TT_EOF);
+    
     return 0;
 }

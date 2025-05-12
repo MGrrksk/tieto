@@ -10,6 +10,8 @@ enum TokenType {
     TT_RBRACE,
     TT_COLON,
     TT_SEMICOLON,
+    TT_COMMA,
+    TT_DOT,
     TT_PLUS,
     TT_MINUS,
     TT_STAR,
@@ -25,7 +27,7 @@ enum TokenType {
     TT_LESS,
     TT_LSEQUAL,
     TT_ARROW,
-    TT_GTLS,
+    TT_LSGT,
     // Literals
     TT_STRING,
     TT_INT,
@@ -46,26 +48,29 @@ enum TokenType {
     TT_VAR,
     TT_CONST,
     TT_FUNC,
+    TT_RETURN,
     // Datatypes
-    TT_I8,
+    TT_BIT,
     TT_U8,
-    TT_F8,
-    TT_I16,
+    TT_I8,
     TT_U16,
-    TT_F16,
-    TT_I32,
+    TT_I16,
     TT_U32,
+    TT_I32,
     TT_F32,
-    TT_I64,
     TT_U64,
+    TT_I64,
     TT_F64,
-    TT_BOOL,
-    TT_DYN
+    TT_DYN,
+    // Special
+    TT_ERROR,
+    TT_EOF
 };
 
 struct Token {
+    TokenType type;
     unsigned short line;
-    unsigned short collumn;
+    unsigned short column;
     unsigned short length;
     const char* lexeme;
 };
