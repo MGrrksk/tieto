@@ -36,6 +36,7 @@ impl Lexer {
             },
             ':' => Token::COLON(self.tokenmeta()),
             ';' => Token::SEMICOLON(self.tokenmeta()),
+            '?' => Token::QUESTION(self.tokenmeta()),
             '+' => Token::PLUS(self.tokenmeta()),
             '-' => Token::MINUS(self.tokenmeta()),
             '*' => {
@@ -64,6 +65,10 @@ impl Lexer {
                 if self.next_is('=') {Token::BNGEQUAL(self.tokenmeta())}
                 else {Token::BANG(self.tokenmeta())}
             },
+            '|' => {
+                if self.next_is('>') {Token::PIPEFORWARD(self.tokenmeta())}
+                else {Token::ERROR(self.tokenmeta(), "Unrecognized character: `|`".to_string())}
+            },
             '"' => {
                 while self.curr < self.src.len() && self.src[self.curr] != '"' {
                     if self.src[self.curr] == '\n' {return Token::ERROR(self.tokenmeta(), "Unterminated string".to_string())}
@@ -74,7 +79,13 @@ impl Lexer {
                     self.eat();
                     Token::STRING(self.tokenmeta(), String::from_iter(&self.src[self.start+1..self.curr-1]))
                 }
-            }
+            },
+            '\n' => {
+                let token = Token::NEWLINE(self.tokenmeta());
+                self.line += 1;
+                self.column = 1;
+                token
+            },
             '0'..='9' => {
                 while self.curr < self.src.len() && self.src[self.curr].is_ascii_digit() {self.eat();}
                 if self.curr < self.src.len() - 1 && self.src[self.curr] == '.' && self.src[self.curr+1].is_ascii_digit() {
@@ -82,7 +93,7 @@ impl Lexer {
                     while self.curr < self.src.len() && self.src[self.curr].is_ascii_digit() {self.eat();}
                     Token::FLOAT(self.tokenmeta(), String::from_iter(&self.src[self.start..self.curr]).parse().unwrap())
                 } else {Token::INT(self.tokenmeta(), String::from_iter(&self.src[self.start..self.curr]).parse().unwrap())}
-            }
+            },
             'a'..='z' | 'A'..='Z' | '_' => {
                 while self.curr < self.src.len() && (self.src[self.curr].is_ascii_alphanumeric() || self.src[self.curr] == '_') {self.eat();}
                 let word = String::from_iter(&self.src[self.start..self.curr]);
@@ -111,7 +122,7 @@ impl Lexer {
                     "return" => Token::RETURN(self.tokenmeta()),
                     _ => Token::ID(self.tokenmeta(), word)
                 }
-            }
+            },
             other => Token::ERROR(self.tokenmeta(), format!("Unrecognized character: `{other}`"))
         }
     }
@@ -119,11 +130,6 @@ impl Lexer {
         while self.curr < self.src.len() {
             match self.src[self.curr] {
                 ' ' | '\t' | '\r' => {self.eat();},
-                '\n' => {
-                    self.eat();
-                    self.line += 1;
-                    self.column = 1;
-                }
                 '#' => {while self.curr < self.src.len() && self.src[self.curr] != '\n' {self.eat();}}
                 _ => break
             }

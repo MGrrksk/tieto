@@ -19,6 +19,7 @@ pub enum Token {
     DBLDOT(TokenMeta),
     COLON(TokenMeta),
     SEMICOLON(TokenMeta),
+    QUESTION(TokenMeta),
     PLUS(TokenMeta),
     MINUS(TokenMeta),
     STAR(TokenMeta),
@@ -35,6 +36,7 @@ pub enum Token {
     LSEQUAL(TokenMeta),
     BANG(TokenMeta),
     BNGEQUAL(TokenMeta),
+    PIPEFORWARD(TokenMeta),
     // LITERALS
     INT(TokenMeta, i64),
     FLOAT(TokenMeta, f64),
@@ -64,7 +66,8 @@ pub enum Token {
     VAR(TokenMeta),
     FUNC(TokenMeta),
     RETURN(TokenMeta),
-    // SPECIAL
+    // OTHER
+    NEWLINE(TokenMeta),
     ERROR(TokenMeta, String),
     EOF(TokenMeta)
 }
