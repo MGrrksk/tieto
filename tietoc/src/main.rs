@@ -1,5 +1,8 @@
 mod token;
 mod lexer;
+mod value;
+mod opcodes;
+mod bytecode;
 
 use std::fs;
 use crate::{lexer::Lexer, token::Token};
