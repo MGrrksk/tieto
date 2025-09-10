@@ -1,3 +1,4 @@
+#[derive(Debug, Clone, PartialEq)]
 pub enum ValueType {
     U8,
     U16,
@@ -14,4 +15,4 @@ pub enum ValueType {
     DYN
 }
 
-pub struct Value(pub u64);
+pub type Value = u64;

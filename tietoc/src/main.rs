@@ -5,7 +5,7 @@ mod opcodes;
 mod bytecode;
 
 use std::fs;
-use crate::{lexer::Lexer, token::Token};
+use crate::{lexer::Lexer, token::TokenType};
 
 fn main() {
     // read file's content
@@ -18,6 +18,6 @@ fn main() {
     loop {
         let token = lexer.get_token();
         println!("{token:?}");
-        if let Token::EOF(_) = token {break}
+        if token.ttype == TokenType::EOF {break}
     }
 }
